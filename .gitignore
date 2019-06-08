@@ -1,5 +1,5 @@
 *.class
 *.iml
 *.xml
-percolation/
-!percolation/*.java
+/percolation/*
+!*.java
