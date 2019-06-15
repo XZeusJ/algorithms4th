@@ -20,17 +20,17 @@ public class ex23 {
     }
 
     public static void main(String[] args) {
-        int[] whitelist = new In(args[0]).readAllInts();
-        Arrays.sort(whitelist);
+        String symbol = args[0];
 
-//        StdOut.println("123");
-//        for (int i = 0; i < whitelist.length; i++) StdOut.print(whitelist[i]);
-//        StdOut.println();
+        int[] whitelist = new In(args[1]).readAllInts();
+        Arrays.sort(whitelist);
 
         while(!StdIn.isEmpty()){
             // 读取键值, 如果不存在于白名单中则将其打印
             int key = StdIn.readInt();
-            if (rank(key, whitelist)<0)
+            if (rank(key, whitelist)<0 && (symbol.intern() == "+"))
+                StdOut.println(key);
+            if (rank(key, whitelist)>=0 && symbol.intern() == "-")
                 StdOut.println(key);
         }
 
