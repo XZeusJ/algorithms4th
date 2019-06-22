@@ -73,7 +73,7 @@ public class Percolation {
         return false;
     }
 
-    public void showSites() {
+    private void showSites() {
         for (int i = 1; i <= gridSize; i++) {
             for (int j = 1; j <= gridSize; j++)
                 StdOut.print(sites[i][j] + " ");
@@ -84,7 +84,7 @@ public class Percolation {
         StdOut.println();
     }
 
-    public void showFullSites() {
+    private void showFullSites() {
         for (int i = 1; i <= gridSize; i++) {
             for (int j = 1; j <= gridSize; j++) {
                 if (isFull(i, j)) StdOut.printf("(%d, %d) is full.\n", i, j);
