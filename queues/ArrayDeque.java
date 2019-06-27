@@ -11,35 +11,44 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 
-public class Deque<Item> implements Iterable<Item> {
+public class ArrayDeque<Item> implements Iterable<Item> {
+    private Item[] q;       // queue elements
     private int n;          // number of elements on queue
-    private Node<Item> first;      // beginning of queue
-    private Node<Item> last;       // end of queue
+    private int first;      // index of first element of queue
+    private int last;       // index of next available slot
 
-    // helper linked list class
-    private static class Node<Item> {
-        private Item item;
-        private Node<Item> next;
-        private Node<Item> prev;
-    }
-
-    public Deque() { // construct an enmty deque
-        first = null;
-        last  = null;
+    public ArrayDeque() { // construct an enmty deque
+        q = (Item[]) new Object[2];
         n = 0;
+        first = 0;
+        last = 0;
     }
 
 
     public boolean isEmpty() { // is the deque empty?
-        return first == null;
+        return n == 0;
     }
 
     public int size() { // return the number of items on the deque
         return n;
     }
 
-    public void addFirst(Item item) {
+    private void resize(int capacity) { // Move stack to a new array of size max.
+        assert capacity >= n;
+        Item[] temp = (Item[]) new Object[capacity];
+        for (int i = 0; i < n; i++) {
+            temp[i] = q[(first + i) % q.length];
+        }
+        q = temp;
+        first = 0;
+        last = n;
+    }
 
+    public void addFirst(Item item) {
+        if (n == q.length) resize(2 * q.length);  // double size of array if necessary
+        q[first--] = item; // add item at first position
+        if (first == 0) first = q.length;
+        n++;
     }
 
     public void addLast(Item item) {
@@ -99,7 +108,7 @@ public class Deque<Item> implements Iterable<Item> {
 
 
     public static void main(String[] args) { // unit testing (optional)
-        Deque<String> queue = new Deque<String>();
+        ArrayDeque<String> queue = new ArrayDeque<String>();
         while (!StdIn.isEmpty()) {
             String item = StdIn.readString();
             if (!item.equals("-")) {
