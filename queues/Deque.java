@@ -31,7 +31,7 @@ public class Deque<Item> implements Iterable<Item> {
 
 
     public boolean isEmpty() { // is the deque empty?
-        return first == null;
+        return first == null || last == null;
     }
 
     public int size() { // return the number of items on the deque
@@ -39,37 +39,44 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     public void addFirst(Item item) {
-
+        Node<Item> oldfirst = first;
+        first = new Node<Item>();
+        first.item = item;
+        first.prev = null;
+        first.next = oldfirst;
+        if (isEmpty()) last = first;
+        else oldfirst.prev = first;
+        n++;
     }
 
     public void addLast(Item item) {
-        // double size of array if necessary and recopy to front of array
-        if (n == q.length) resize(2 * q.length);  // double size of array if necessary
-        q[last++] = item;                       // add item at last position
-        if (last == q.length) last = 0;         // wrap-around
+        Node<Item> oldlast = last;
+        last = new Node<Item>();
+        last.item = item;
+        last.prev = oldlast;
+        last.next = null;
+        if (isEmpty()) first = last;
+        else oldlast.next = last;
         n++;
     }
 
     public Item removeFirst() {
         if (isEmpty()) throw new NoSuchElementException("Queue underflow");
-        Item item = q[first];
-        q[first] = null;                        // to avoid loitering
+        Item item = first.item;
+        first = first.next;
+        first.prev = null;
         n--;
-        first++;
-        if (first == q.length) first = 0;       // wrap-around
-        // shrink size of array if necessary
-        if (n > 0 && n == q.length / 4) resize(q.length / 2);
+        if (isEmpty()) last = null; // to avoid loitering
         return item;
     }
 
     public Item removeLast() {
         if (isEmpty()) throw new NoSuchElementException("Queue underflow");
-        Item item = q[last];
-        q[last] = null;                         // to avoid loitering
+        Item item = last.item;
+        last = last.prev;
+        last.next = null;
         n--;
-        last--;
-        if (last == 0) last = q.length;         // wrap-around
-        if (n > 0 && n == q.length / 4) resize(q.length / 2);
+        if (isEmpty()) first = null;
         return item;
     }
 
@@ -79,10 +86,10 @@ public class Deque<Item> implements Iterable<Item> {
 
     // an iterator, doesn't implement remove() since it's optional
     private class ArrayIterator implements Iterator<Item> {
-        private int i = 0;
+        private Node<Item> current;
 
         public boolean hasNext() {
-            return i < n;
+            return current != null;
         }
 
         public void remove() {
@@ -91,8 +98,8 @@ public class Deque<Item> implements Iterable<Item> {
 
         public Item next() {
             if (!hasNext()) throw new NoSuchElementException();
-            Item item = q[(i + first) % q.length];
-            i++;
+            Item item = current.item;
+            current = current.next;
             return item;
         }
     }
@@ -102,21 +109,13 @@ public class Deque<Item> implements Iterable<Item> {
         Deque<String> queue = new Deque<String>();
         while (!StdIn.isEmpty()) {
             String item = StdIn.readString();
-            if (!item.equals("-")) {
-                queue.addLast(item);
-            }
-            // else if (!queue.isEmpty()) StdOut.print(queue.removeLast() + " ");
-            else if (!queue.isEmpty()) {
-                // queue.removeLast();
-                StdOut.print(queue.removeLast() + " ");
-            }
-            // StdOut.println();
+            if (!item.equals("-")){
+                queue.addFirst(item);
 
+            }
+            else if (!queue.isEmpty())
+                StdOut.print(queue.removeFirst() + " ");
         }
-        StdOut.println();
-        for (String s : queue)
-            StdOut.print(s+" ");
-        StdOut.println();
         StdOut.println("(" + queue.size() + " left on queue)");
     }
 }
