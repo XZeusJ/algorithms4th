@@ -4,7 +4,6 @@
  *  Description:
  **************************************************************************** */
 
-import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Iterator;
@@ -25,7 +24,7 @@ public class Deque<Item> implements Iterable<Item> {
 
     public Deque() { // construct an enmty deque
         first = null;
-        last  = null;
+        last = null;
         n = 0;
     }
 
@@ -39,6 +38,7 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     public void addFirst(Item item) {
+        if (item == null) { throw new IllegalArgumentException("No item add");}
         Node<Item> oldfirst = first;
         first = new Node<Item>();
         first.item = item;
@@ -50,6 +50,7 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     public void addLast(Item item) {
+        if (item == null) { throw new IllegalArgumentException("No item add");}
         Node<Item> oldlast = last;
         last = new Node<Item>();
         last.item = item;
@@ -64,9 +65,9 @@ public class Deque<Item> implements Iterable<Item> {
         if (isEmpty()) throw new NoSuchElementException("Queue underflow");
         Item item = first.item;
         first = first.next;
-        first.prev = null;
         n--;
         if (isEmpty()) last = null; // to avoid loitering
+        else first.prev = null;
         return item;
     }
 
@@ -74,18 +75,18 @@ public class Deque<Item> implements Iterable<Item> {
         if (isEmpty()) throw new NoSuchElementException("Queue underflow");
         Item item = last.item;
         last = last.prev;
-        last.next = null;
         n--;
         if (isEmpty()) first = null;
+        else last.next = null;
         return item;
     }
 
     public Iterator<Item> iterator() {
-        return new ArrayIterator();
+        return new DequeIterator();
     }
 
     // an iterator, doesn't implement remove() since it's optional
-    private class ArrayIterator implements Iterator<Item> {
+    private class DequeIterator implements Iterator<Item> {
         private Node<Item> current;
 
         public boolean hasNext() {
@@ -106,16 +107,23 @@ public class Deque<Item> implements Iterable<Item> {
 
 
     public static void main(String[] args) { // unit testing (optional)
-        Deque<String> queue = new Deque<String>();
-        while (!StdIn.isEmpty()) {
-            String item = StdIn.readString();
-            if (!item.equals("-")){
-                queue.addFirst(item);
-
-            }
-            else if (!queue.isEmpty())
-                StdOut.print(queue.removeFirst() + " ");
+        Deque<Integer> deque = new Deque<Integer>();
+        StdOut.println(deque.isEmpty());
+        deque.addFirst(1);
+        deque.addFirst(2);
+        // StdOut.println(deque.removeFirst());
+        // StdOut.println(deque.removeFirst());
+        // deque.addLast(1);
+        // deque.addLast(2);
+        for (int n: deque) {
+            StdOut.print(n+" ");
         }
-        StdOut.println("(" + queue.size() + " left on queue)");
+
+        StdOut.println(deque.removeLast());
+        StdOut.println(deque.removeLast());
+
+        for (int n: deque) {
+            StdOut.print(n+" ");
+        }
     }
 }
