@@ -1,6 +1,8 @@
-*.class
-*.iml
+
+*.png
 *.xml
 *.txt
-*/*
+*.zip
+*.class
+*.iml
 !*.java
