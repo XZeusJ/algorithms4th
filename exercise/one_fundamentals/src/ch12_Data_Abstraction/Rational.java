@@ -68,17 +68,19 @@ public class Rational {
     }
 
 
-    public  Rational times(Rational that) {
+    public Rational times(Rational that) {
         // reduce p1/q2 and p2/q1, then multiply, where a = p1/q1 and b = p2/q2
         Rational c = new Rational(this.num, that.den);
         Rational d = new Rational(that.num, this.den);
         return new Rational(c.num * d.num, c.den * d.den);
     }
 
-    public Rational reciprocal() { return new Rational(den, num);  }
+    public Rational reciprocal() {
+        return new Rational(den, num);
+    }
 
     // return this / that
-    public Rational dividedBy(Rational that) {
+    public Rational divides(Rational that) {
         return this.times(that.reciprocal());
     }
 
@@ -100,7 +102,7 @@ public class Rational {
 
     public String toString() {
         if (den == 1) return num + "";
-        else  return num + "/" + den;
+        else return num + "/" + den;
     }
 
     // test client
