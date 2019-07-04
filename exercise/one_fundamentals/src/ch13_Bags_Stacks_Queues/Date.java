@@ -1,7 +1,10 @@
 package ch13_Bags_Stacks_Queues;
 
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdOut;
 
+// ex16
 public class Date {
     private static final int[] DAYS = { 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
@@ -64,6 +67,22 @@ public class Date {
         if (this.month != that.month) return false;
         if (this.year != that.year) return false;
         return true;
+    }
+
+    public static Date[] readDates(String name) {
+        In in = new In(name);
+        Queue<Date> q = new Queue<Date>();
+        while (!in.isEmpty()) {
+            String s = in.readString();
+            q.enqueue(new Date(s));
+        }
+
+        int N = q.size();
+        Date[] a = new Date[N];
+        for (int i = 0; i < N; i++) {
+            a[i] = q.dequeue();
+        }
+        return a;
     }
 
     public static void main(String[] args) {

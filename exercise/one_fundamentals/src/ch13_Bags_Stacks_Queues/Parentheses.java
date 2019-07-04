@@ -17,6 +17,7 @@
 
 package ch13_Bags_Stacks_Queues;
 
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
 
@@ -53,9 +54,8 @@ public class Parentheses {
     }
 
     public static void main(String[] args) {
-//        In in = new In();
-//        String s = in.readAll().trim();
-        String s = "[()]{}";
+        In in = new In();
+        String s = in.readAll().trim();
         StdOut.println(isBalanced(s));
     }
 }
