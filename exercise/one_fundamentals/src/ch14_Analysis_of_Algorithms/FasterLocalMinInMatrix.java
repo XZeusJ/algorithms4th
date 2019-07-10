@@ -3,18 +3,18 @@ package ch14_Analysis_of_Algorithms;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
-public class LocalMinInMatrix {
+// not finished yet
+// http://courses.csail.mit.edu/6.006/spring11/lectures/lec02.pdf
+public class FasterLocalMinInMatrix {
 
-    private static int findMinIndex(int[][] a, int mid) {
+    private static int findMin(int[][] a, int midi, int midj) {
         int min = Integer.MAX_VALUE;
-        int minIndex = -1;
-        for (int i = 0; i < a[mid].length; i++) {
-            if (a[mid][i] < min) {
-                minIndex = i;
-                min = a[mid][i];
-            }
+        int mini = -1;
+        int minj = -1;
+        for (int i = 0; i < a.length; i++) {
+
         }
-        return minIndex;
+        return -1;
     }
 
     private static int[] localMin(int[][] a) {
@@ -22,8 +22,11 @@ public class LocalMinInMatrix {
     }
 
     private static int[] localMin(int[][] a, int lo, int hi, int len) {
-        int mid = lo + (hi - lo) / 2;
-        int j = findMinIndex(a, mid);
+        int midi = loi + (hii - loi) / 2;
+        int midj = loj + (hij - loj) / 2;
+
+        // look at bound, center row, and center column
+        int index = findMin(a, midi, midj);
 
         if ((mid == 0 || a[mid][j] < a[mid - 1][j]) && (mid == len - 1 || a[mid][j] < a[mid + 1][j]))
             return new int[]{mid, j};
