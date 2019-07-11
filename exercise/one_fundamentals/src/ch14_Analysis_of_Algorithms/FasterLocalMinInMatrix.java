@@ -17,23 +17,23 @@ public class FasterLocalMinInMatrix {
         return -1;
     }
 
-    private static int[] localMin(int[][] a) {
-        return localMin(a, 0, a.length - 1, a.length);
-    }
+//    private static int[] localMin(int[][] a) {
+//        return localMin(a, 0, a.length - 1, a.length);
+//    }
 
-    private static int[] localMin(int[][] a, int lo, int hi, int len) {
-        int midi = loi + (hii - loi) / 2;
-        int midj = loj + (hij - loj) / 2;
-
-        // look at bound, center row, and center column
-        int index = findMin(a, midi, midj);
-
-        if ((mid == 0 || a[mid][j] < a[mid - 1][j]) && (mid == len - 1 || a[mid][j] < a[mid + 1][j]))
-            return new int[]{mid, j};
-        else if (mid > 0 && a[mid - 1][j] < a[mid][j])
-            return localMin(a, lo, mid - 1, len);
-        else return localMin(a, mid + 1, hi, len);
-    }
+//    private static int[] localMin(int[][] a, int loi, int hii, int len) {
+//        int midi = loi + (hii - loi) / 2;
+//        int midj = loj + (hij - loj) / 2;
+//
+//        // look at bound, center row, and center column
+//        int index = findMin(a, midi, midj);
+//
+//        if ((mid == 0 || a[mid][j] < a[mid - 1][j]) && (mid == len - 1 || a[mid][j] < a[mid + 1][j]))
+//            return new int[]{mid, j};
+//        else if (mid > 0 && a[mid - 1][j] < a[mid][j])
+//            return localMin(a, lo, mid - 1, len);
+//        else return localMin(a, mid + 1, hi, len);
+//    }
 
     public static void main(String[] args) {
         // init random array
@@ -52,8 +52,8 @@ public class FasterLocalMinInMatrix {
         }
 
         // find local min by ~NlgN
-        int[] index = localMin(m);
-        StdOut.println("local min index -> " + index[0] + " " + index[1]);
-        StdOut.println("local min -> " + m[index[0]][index[1]]);
+//        int[] index = localMin(m);
+//        StdOut.println("local min index -> " + index[0] + " " + index[1]);
+//        StdOut.println("local min -> " + m[index[0]][index[1]]);
     }
 }
