@@ -1,4 +1,4 @@
-package ch11_basic_programming_model;
+package ch11_Basic_Programming_Model;
 
 public class ex12 {
     public static void main(String[] args){

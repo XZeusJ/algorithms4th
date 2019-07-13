@@ -29,6 +29,5 @@ public class ErdosRenyi {
             int n = StdIn.readInt();
             StdOut.println(count(n));
         }
-
     }
 }

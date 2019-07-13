@@ -1,4 +1,4 @@
-package ch11_basic_programming_model;
+package ch11_Basic_Programming_Model;
 
 import java.util.Arrays;
 import edu.princeton.cs.algs4.StdIn;
