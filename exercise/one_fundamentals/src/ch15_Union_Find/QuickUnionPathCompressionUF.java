@@ -3,16 +3,16 @@ package ch15_Union_Find;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
-public class QuickUnionUF {
-    private int[] parent;   // parent[i] = parent of i
+public class QuickUnionPathCompressionUF {
+    private int[] id;   // id[i] = id of i
     private int count;  // number of components
 
     // initialize an empty union-find data structure with n sites
-    public QuickUnionUF(int n) {
-        parent = new int[n];
+    public QuickUnionPathCompressionUF(int n) {
         count = n;
+        id = new int[n];
         for (int i = 0; i < n; i++)
-            parent[i] = i;
+            id[i] = i;
     }
 
     // returns the number of components
@@ -27,18 +27,28 @@ public class QuickUnionUF {
 
     // return the component identifier for the component containing site p
     public int find(int p) {
-        while (p != parent[p])
-            p = parent[p];
-        return p;
+        // path compress
+        // first we find what root of tree about p node
+        int root = p;
+        while (root != id[root])
+            root = id[root];
+
+        // after finding root, we exam all nodes in path which from p node to root node.
+        // and change each node link from directing its id to its tree root node.
+        while (p != root) {
+            int newp = id[p];
+            id[p] = root;
+            p = newp;
+        }
+        return root;
     }
 
     // merges the component containing ste p with the component containing site q
     public void union(int p, int q) {
         int rootP = find(p);
         int rootQ = find(q);
-
         if (rootP == rootQ) return;
-        parent[rootP] = rootQ;
+        id[rootP] = rootQ;
         count--;
     }
 
@@ -52,13 +62,14 @@ public class QuickUnionUF {
      */
     public static void main(String[] args) {
         int n = StdIn.readInt();
-        QuickUnionUF uf = new QuickUnionUF(n);
+        QuickUnionPathCompressionUF uf = new QuickUnionPathCompressionUF(n);
         while (!StdIn.isEmpty()) {
             int p = StdIn.readInt();
             int q = StdIn.readInt();
             if (uf.connected(p, q)) continue;
             uf.union(p, q);
             StdOut.println(p + " " + q);
+            StdOut.println(uf.count() + " components left");
         }
         StdOut.println(uf.count() + " components");
     }
