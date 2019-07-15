@@ -1,6 +1,5 @@
 package ch21_Elementary_Sorts;
 
-import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
 public class Selection {
@@ -40,7 +39,8 @@ public class Selection {
     }
 
     public static void main(String[] args) {
-        String[] a = StdIn.readAllStrings();
+//        String[] a = StdIn.readAllStrings();
+        String[] a = {"s","o","r","t","e","x","a","p","l","n","m"};
         show(a);
         Selection.sort(a);
         show(a);

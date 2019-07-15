@@ -4,4 +4,6 @@
 *.zip
 *.class
 *.iml
+*.kotlin_module
 !*.java
+
