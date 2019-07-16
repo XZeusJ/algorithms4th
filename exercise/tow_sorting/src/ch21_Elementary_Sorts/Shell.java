@@ -16,7 +16,7 @@ public class Shell {
         while (h >= 1) {
             // h-sort the array
             for (int i = h; i < n; i++) {
-                for (int j = i; j >= h && less(a[j], a[j - h]); j = j -= h) {
+                for (int j = i; j >= h && less(a[j], a[j - h]); j -= h) {
                     exch(a, j, j - h);
                 }
             }
