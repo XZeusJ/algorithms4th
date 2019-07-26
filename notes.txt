@@ -1,1 +1,0 @@
-~/OneDrive/6.00/3.Algorithms/algorithms4th/exercise/out/production/one_fundamentals> java-algs4 basic_programming_model/ex23 algs_data/tinyW.txt < algs_data/tinyT.txt

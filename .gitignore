@@ -5,5 +5,7 @@
 *.class
 *.iml
 *.kotlin_module
+*/.idea/*
+*/.lift/*
 !*.java
 
