@@ -10,11 +10,11 @@ import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Arrays;
 
-public class BruteCollinearPoints {
+public class FastCollinearPoints {
     private LineSegment[] segments; // record segments
-    private int n;    // record number of segments
+    private int n;  // number of segments
 
-    public BruteCollinearPoints(Point[] points) { // finds all line segments containing 4 points
+    public FastCollinearPoints(Point[] points) { // finds all line segments containing 4 or more points
         checkNull(points);      // corner case
         Arrays.sort(points);
         checkRepeat(points);    // corner case
@@ -23,38 +23,38 @@ public class BruteCollinearPoints {
         int len = points.length;
         // List<LineSegment> list = new LinkedList<>();
         segments = new LineSegment[0];
+        // Point[] newPoints = points.clone();
 
 
-        Point p, q, r, s;
-        double slopepq, slopepr, slopeps;
+        Point p;
+        Point q;
+        Point curr;
+        Point next;
         for (int i = 0; i < len - 3; i++) {
+            Arrays.sort(points);
             p = points[i];
+            q = null;
 
-            for (int j = i + 1; j < len - 2; j++) {
-                q = points[j];
-                slopepq = p.slopeTo(q);
+            Arrays.sort(points, p.slopeOrder());
+            int count = 1;
+            for (int j = i+1; j < len - 1; j++) {
+                curr = points[j];
+                next = points[j+1];
+                double slope1 = p.slopeTo(curr);
+                double slope2 = p.slopeTo(next);
 
-                for (int k = j + 1; k < len - 1; k++) {
-                    r = points[k];
-                    slopepr = p.slopeTo(r);
-                    if (slopepq == slopepr) {
-
-                        for (int l = k + 1; l < len; l++) {
-                            s = points[l];
-                            slopeps = p.slopeTo(s);
-
-                            if (slopepr == slopeps) {
-                                // list.add(new LineSegment(p, s));
-                                if (n == segments.length) resize(segments.length+1);
-                                segments[n++] = new LineSegment(p, s);
-                            }
-                        }
-                    }
-                }
+                if (slope1 == slope2) count++;
+                else count = 1;
+                if (count >= 3) q = points[j + 1];
             }
+            if (q != null) {
+                if (n == segments.length) resize(segments.length + 1);
+                segments[n++] = new LineSegment(p, q);
+            }
+
         }
-        // segments = list.toArray(new LineSegment[0]);
     }
+
 
     private void resize(int capacity) {
         assert capacity >= n;
@@ -78,16 +78,16 @@ public class BruteCollinearPoints {
         }
     }
 
+
     public int numberOfSegments() { // the number of line segments
         return n;
     }
 
-    public LineSegment[] segments() { // the line segments
+    public LineSegment[] segments() {  // the line segments
         return segments;
     }
 
     public static void main(String[] args) {
-
         // read the n points from a file
         In in = new In(args[0]);
         int n = in.readInt();
@@ -108,16 +108,11 @@ public class BruteCollinearPoints {
         StdDraw.show();
 
         // print and draw the line segments
-        BruteCollinearPoints collinear = new BruteCollinearPoints(points);
+        FastCollinearPoints collinear = new FastCollinearPoints(points);
         for (LineSegment segment : collinear.segments()) {
             StdOut.println(segment);
             segment.draw();
         }
-        // for (int i = 0; i < collinear.numberOfSegments(); i++) {
-        //     LineSegment segment = collinear.segments[i];
-        //     StdOut.println(segment);
-        //     segment.draw();
-        // }
 
         StdDraw.show();
     }
