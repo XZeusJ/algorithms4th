@@ -14,9 +14,9 @@ public class BruteCollinearPoints {
     private LineSegment[] segments; // record segments
     private int n;    // record number of segments
 
-    public BruteCollinearPoints(Point[] points) { // finds all line segments containing 4 points
+    public BruteCollinearPoints(Point[] pointSet) { // finds all line segments containing 4 points
+        Point[] points = pointSet.clone();
         checkNull(points);      // corner case
-        Arrays.sort(points);
         checkRepeat(points);    // corner case
 
         n = 0;
@@ -45,7 +45,7 @@ public class BruteCollinearPoints {
 
                             if (slopepr == slopeps) {
                                 // list.add(new LineSegment(p, s));
-                                if (n == segments.length) resize(segments.length+1);
+                                if (n == segments.length) resize(segments.length + 1);
                                 segments[n++] = new LineSegment(p, s);
                             }
                         }
@@ -72,9 +72,10 @@ public class BruteCollinearPoints {
     }
 
     private void checkRepeat(Point[] points) {
-        for (int i = 0; i < points.length - 2; i++) {
-            if (points[i] == points[i + 1])
-                throw new IllegalArgumentException();
+        Arrays.sort(points);
+        for (int i = 0; i < points.length - 1; i++) {
+            if (points[i].compareTo(points[i + 1]) == 0)
+                throw new IllegalArgumentException("Duplicated.");
         }
     }
 
