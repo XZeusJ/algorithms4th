@@ -61,13 +61,15 @@ public class Point implements Comparable<Point> {
      */
     public double slopeTo(Point that) {
         /* YOUR CODE HERE */
-        int px = this.x, py = this.y;
-        int qx = that.x, qy = that.y;
-        if (px == qx && py == qy) return Double.NEGATIVE_INFINITY;
-        if (px == qx) return Double.POSITIVE_INFINITY;
-        if (qy == py) return 0.0;
-
-        return (double) (qy - py) / (qx - px);
+        double diffX = (double) (that.x - this.x);
+        double diffY = (double) (that.y - this.y);
+        if (diffY == 0) {
+            return diffX == 0 ? Double.NEGATIVE_INFINITY : +0.0;
+        } else if (diffX == 0) {
+            return Double.POSITIVE_INFINITY;
+        } else {
+            return diffY / diffX;
+        }
 
     }
 
@@ -83,11 +85,15 @@ public class Point implements Comparable<Point> {
      */
     public int compareTo(Point that) {
         /* YOUR CODE HERE */
-        int px = this.x, py = this.y;
-        int qx = that.x, qy = that.y;
-        if (py < qy || (py == qy && px < qx)) return -1;
-        else if (px == qx && py == qy) return 0;
-        else return 1;
+        // int px = this.x, py = this.y;
+        // int qx = that.x, qy = that.y;
+        // if (py < qy || (py == qy && px < qx)) return -1;
+        // else if (px == qx && py == qy) return 0;
+        // else return 1;
+
+        if (this.y > that.y) return +1;
+        else if (this.y < that.y) return -1;
+        else return Integer.compare(this.x, that.x);
     }
 
     /**
@@ -103,13 +109,14 @@ public class Point implements Comparable<Point> {
 
     private class slopeOrder implements Comparator<Point> {
         public int compare(Point p1, Point p2) {
-            Point p0 = new Point(x, y);
-            double slope1 = p1.slopeTo(p0);
-            double slope2 = p2.slopeTo(p0);
+            double slope1 = slopeTo(p1);
+            double slope2 = slopeTo(p2);
 
-            if (slope1 < slope2) return -1;
-            else if (slope1 > slope2) return 1;
-            else return 0;
+            // if (slope1 < slope2) return -1;
+            // else if (slope1 > slope2) return 1;
+            // else return 0;
+
+            return Double.compare(slope1, slope2);
         }
     }
 
