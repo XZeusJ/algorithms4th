@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 public class Board {
     private final int[] tiles1D;
-    private int len;
+    private final int len;
 
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
@@ -22,8 +22,15 @@ public class Board {
 
         for (int i = 0; i < len; i++)
             for (int j = 0; j < len; j++)
-                tiles1D[i + j] = tiles[i][j];
+                tiles1D[i * len + j] = tiles[i][j];
     }
+
+    // helper constructor
+    private Board(int[] tiles1D) {
+        len = (int) Math.sqrt(tiles1D.length);
+        this.tiles1D = Arrays.copyOf(tiles1D, tiles1D.length);
+    }
+
 
     // string representation of this board
     public String toString() {
@@ -58,8 +65,8 @@ public class Board {
         for (int i = 0; i < tiles1D.length; i++) {
             temp = tiles1D[i];
             if (temp != i + 1 && temp != 0) {
-                rowDist = (temp - 1) / len;
-                colDist = (temp - 1) % len;
+                rowDist = Math.abs((temp - 1) / len - i / len);
+                colDist = Math.abs((temp - 1) % len - i % len);
                 sum += rowDist + colDist;
             }
         }
@@ -82,11 +89,13 @@ public class Board {
     // all neighboring boards
     public Iterable<Board> neighbors() {
         Stack<Board> neighbors = new Stack<>();
-        int[][] neighborBoard;
-        int blankIndex = -1;
+        int[] neighborBoard;
+        int blankIndex = 0;
         int neighborIndex;
 
-        while (tiles1D[++blankIndex] != 0) continue;    // find blank index
+        // StdOut.println(this);
+
+        while (tiles1D[blankIndex] != 0) blankIndex++;    // find blank index
 
         int[] diffX = { -1, 1, 0, 0 };
         int[] diffY = { 0, 0, -1, 1 };
@@ -105,23 +114,19 @@ public class Board {
         return neighbors;
     }
 
-    private int[][] swapTiles(int tileP, int tileQ) {
+    private int[] swapTiles(int ptileIndex, int qtileIndex) {
         int[] tiles = Arrays.copyOf(tiles1D, tiles1D.length);
-        int swap = tiles[tileP];
-        tiles[tileP] = tiles[tileQ];
-        tiles[tileQ] = swap;
 
-        // transform from 1D to 2D
-        int[][] tiles2D = new int[len][len];
-        for (int i = 0; i < len; i++)
-            for (int j = 0; j < len; j++)
-                tiles2D[i][j] = tiles[i + j];
-        return tiles2D;
+        int swap = tiles[ptileIndex];
+        tiles[ptileIndex] = tiles[qtileIndex];
+        tiles[qtileIndex] = swap;
+
+        return tiles;
     }
 
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
-        int[][] twinTiles;
+        int[] twinTiles;
 
         if (tiles1D[0] != 0 && tiles1D[1] != 0) twinTiles = swapTiles(0, 1);
         else twinTiles = swapTiles(len * len - 2, len * len - 1);
