@@ -11,15 +11,14 @@ import edu.princeton.cs.algs4.StdDraw;
 
 public class KdTree {
     private Node root;  // root of 2dTree
+    private int size;
 
     private class Node {
         private Point2D point;    // sorted by key
         private Node left, right;   // left and right subtrees
-        private int size;   // number of nodes in subtree
 
-        public Node(Point2D p, int size) {
+        public Node(Point2D p) {
             this.point = p;
-            this.size = size;
         }
     }
 
@@ -36,7 +35,7 @@ public class KdTree {
 
     private int size(Node x) { // return number of keys in kdTree rooted at x
         if (x == null) return 0;
-        else return x.size;
+        else return size;
     }
 
     public void insert(
@@ -46,7 +45,7 @@ public class KdTree {
     }
 
     private Node insert(Node currNode, Point2D point, boolean isEven) {
-        if (currNode == null) return new Node(point, 1);
+        if (currNode == null) return new Node(point);
 
         if (isEven) { // at even level we use x-coordinate to compare points
             // if (point.equals(currNode.point)) return currNode;
@@ -61,7 +60,7 @@ public class KdTree {
             else if (cmp > 0) currNode.right = insert(currNode.right, point, !isEven);
         }
 
-        currNode.size = 1 + size(currNode.left) + size(currNode.right);
+        size++;
         return currNode;
     }
 
