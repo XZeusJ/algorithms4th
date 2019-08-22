@@ -8,8 +8,7 @@ import edu.princeton.cs.algs4.Bag;
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.ST;
-
-import java.util.ArrayList;
+import edu.princeton.cs.algs4.StdOut;
 
 public class WordNet {
     private ST<String, Bag<Integer>> st;
@@ -21,18 +20,20 @@ public class WordNet {
 
         // generate symbol table (key is noun, value is ids contained in Bag)
         In inSynsets = new In(synsets);
-        int id;
+        st = new ST<String, Bag<Integer>>();
         String[] fields;
         String[] nouns;
+        int id;
         while (!inSynsets.isEmpty()) {
             fields = inSynsets.readLine().split(",");
-            id = Integer.parseInt(fields[0]);
             nouns = fields[1].split(" ");
+
+            id = Integer.parseInt(fields[0]);
             for (int i = 0; i < nouns.length; i++) {
                 if (st.contains(nouns[i]))
                     st.get(nouns[i]).add(id);
                 else {
-                    Bag ids = new Bag();
+                    Bag<Integer> ids = new Bag<Integer>();
                     ids.add(id);
                     st.put(nouns[i], ids);
                 }
@@ -40,9 +41,9 @@ public class WordNet {
         }
 
         // generate hypernyms relationship digraph
+        In inHypernyms = new In(hypernyms);
         int size = st.size();
         hypernym = new Digraph(size);
-        In inHypernyms = new In(hypernyms);
 
         int v, w;
         while (!inHypernyms.isEmpty()) {
@@ -53,7 +54,21 @@ public class WordNet {
                 hypernym.addEdge(v, w);
             }
         }
+    }
 
+    // test digraph
+    public int root() {
+        int v = 0;
+        int count = 0;
+        while (hypernym.outdegree(v) != 0) {
+            for (int i : hypernym.adj(v)) {
+                v = i;
+                count++;
+                break;
+            }
+        }
+        StdOut.println(count);
+        return v;
     }
 
     // returns all WordNet nouns
@@ -72,7 +87,7 @@ public class WordNet {
         if (nounA == null || nounB == null) throw new IllegalArgumentException();
         if (!isNoun(nounA) || !isNoun(nounB)) throw new IllegalArgumentException();
 
-
+        return -1;
     }
 
     // a synset (second field or synsets.txt) that is the common ancester of nounA and nounB
@@ -80,11 +95,17 @@ public class WordNet {
     public String sap(String nounA, String nounB) {
         if (nounA == null || nounB == null) throw new IllegalArgumentException();
         if (!isNoun(nounA) || !isNoun(nounB)) throw new IllegalArgumentException();
-
+        return "not finished";
 
     }
 
     public static void main(String[] args) {
+        // test digraph
+        String hypernyms = "hypernyms.txt";
+        String synsets = "synsets.txt";
+        WordNet wn = new WordNet(synsets, hypernyms);
+
+        StdOut.println(wn.root());
 
     }
 }
