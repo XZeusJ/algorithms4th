@@ -1,5 +1,3 @@
-
-
 /* *****************************************************************************
  *  Name:
  *  Date:
@@ -10,28 +8,15 @@ import edu.princeton.cs.algs4.Picture;
 
 import java.awt.Color;
 
-public class SeamCarver {
-    private static final boolean HORIZONTAL = true;
-    private static final boolean VERTICAL = false;
-
-    private int width, height;
-
-    private Picture picture;
-    private double[][] energy;
+public class SeamCarver_nv {
+    private final Picture picture;
+    private double[] distTo;
+    private int[][] edgeTo;
 
     // create a seam carver object based on the given picture
-    public SeamCarver(Picture picture) {
+    public SeamCarver_nv(Picture picture) {
         if (picture == null) throw new IllegalArgumentException();
-
         this.picture = new Picture(picture);
-        this.height = picture.height();
-        this.width = picture.width();
-
-        this.energy = new double[height()][width()];
-        for (int i = 0; i < height(); i++) {
-            for (int j = 0; j < width(); j++)
-                this.energy[i][j] = energy(j, i);
-        }
     }
 
     // current picture
@@ -41,12 +26,12 @@ public class SeamCarver {
 
     // width of current picture
     public int width() {
-        return this.width;
+        return this.picture.width();
     }
 
     // height of current picture
     public int height() {
-        return this.height;
+        return this.picture.height();
     }
 
     // energy of pixel at column x and row y
@@ -73,33 +58,23 @@ public class SeamCarver {
 
     // sequence of indices for horizontal seam
     public int[] findHorizontalSeam() {
-        this.energy = transpose(this.energy);
-        int[] seam = findVerticalSeam();
-        this.energy = transpose(this.energy);
-        return seam;
-    }
-
-    private double[][] transpose(double[][] origin) {
-        if (origin == null) throw new NullPointerException();
-        if (origin.length < 1) throw new IllegalArgumentException();
-        double[][] result = new double[origin[0].length][origin.length];
-        for (int i = 0; i < origin[0].length; i++) {
-            for (int j = 0; j < origin.length; j++)
-                result[i][j] = origin[j][i];
-        }
-        int swap = this.width;
-        this.width = this.height;
-        this.height = swap;
-        return result;
+        // this.picture =
+        return new int[0];
     }
 
 
     // sequence of indices for vertical seam
     public int[] findVerticalSeam() {
+        // construct 2D energy array
+        double[][] energy = new double[height()][width()];
+        for (int row = 0; row < height(); row++) {
+            for (int col = 0; col < width(); col++)
+                energy[col][row] = energy(col, row);
+        }
 
         // INIT
-        int[][] edgeTo = new int[width()][height()];
-        double[] distTo = new double[width()]; // current row's distant
+        this.edgeTo = new int[width()][height()];
+        this.distTo = new double[width()]; // current row's distant
 
         // init first row's distant all to be 1000;
         for (int v = 0; v < distTo.length; v++)
@@ -116,11 +91,11 @@ public class SeamCarver {
 
             for (int j = 1; j < width(); j++) {
                 int x = j, y = i;
-                double e = energy[y][x];
+                double e = energy[x][y];
 
-                relax(x - 1, x, y, e, prevDistTo, distTo, edgeTo);
-                relax(x, x, y, e, prevDistTo, distTo, edgeTo);
-                relax(x + 1, x, y, e, prevDistTo, distTo, edgeTo);
+                relax(x - 1, x, y, e, prevDistTo);
+                relax(x, x, y, e, prevDistTo);
+                relax(x + 1, x, y, e, prevDistTo);
             }
         }
 
@@ -138,7 +113,6 @@ public class SeamCarver {
             }
         }
 
-        // use end pixel to build the complete shortest path
         int[] seam = new int[height()];
         for (int i = height() - 1; i >= 0; i--) {
             seam[i] = minIndex;
@@ -147,8 +121,7 @@ public class SeamCarver {
         return seam;
     }
 
-    private void relax(int prev, int x, int y, double e, double[] prevDistTo, double[] distTo,
-                       int[][] edgeTo) {
+    private void relax(int prev, int x, int y, double e, double[] prevDistTo) {
         if (prev < 0 || prev >= prevDistTo.length) return;
 
         double weight = prevDistTo[prev];
@@ -161,42 +134,19 @@ public class SeamCarver {
 
     // remove horizontal seam from current picture
     public void removeHorizontalSeam(int[] seam) {
-        isValidSeam(seam, HORIZONTAL);
+        isValidSeam(seam, true);
 
-        Picture newPicture = new Picture(width(), height() - 1);
-
-        for (int i = 0; i < width(); i++) {
-            for (int j = 0; j < height(); j++) {
-                if (seam[i] == j) continue;
-                Color color = this.picture.get(i, j);
-                newPicture.set(i, seam[i] > j ? j : j - 1, color);
-            }
-        }
-        this.picture = newPicture;
-        this.height = height() - 1;
     }
 
     // remove vertical seam from current picture
     public void removeVerticalSeam(int[] seam) {
-        isValidSeam(seam, VERTICAL);
+        isValidSeam(seam, false);
 
-        Picture newPicture = new Picture(width() - 1, height());
-
-        for (int i = 0; i < height(); i++) {
-            for (int j = 0; j < width(); j++) {
-                if (seam[i] == j) continue;
-
-                Color color = this.picture.get(j, i);
-                newPicture.set(seam[i] > j ? j : j - 1, i, color);
-            }
-        }
-        this.picture = newPicture;
-        this.width = width() - 1;
     }
 
     private void isValidSeam(int[] seam, boolean isHorizon) {
         if (seam == null) throw new IllegalArgumentException();
-        if (isHorizon == HORIZONTAL) { // horizontalSeam case
+        if (isHorizon) { // horizontalSeam case
             if (seam.length != width()) throw new IllegalArgumentException();
             if (height() <= 1) throw new IllegalArgumentException();
 
@@ -209,7 +159,7 @@ public class SeamCarver {
             if (width() <= 1) throw new IllegalArgumentException();
 
             for (int i : seam) {
-                if (i < 0 || i > width()) throw new IllegalArgumentException();
+                if (i < 0 || i > height()) throw new IllegalArgumentException();
             }
         }
         for (int i = 1; i < seam.length; i++) {
@@ -219,8 +169,7 @@ public class SeamCarver {
 
 
     //  unit testing (optional)
-    // public static void main(String[] args) {
-    //
-    // }
-}
+    public static void main(String[] args) {
 
+    }
+}
